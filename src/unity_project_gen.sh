@@ -1,6 +1,21 @@
 # Create a unity project from a project name
 
 unity_5_3_6=/Applications/Unity5.3.6/Unity5.3.6.app/Contents/MacOS/Unity
-unity=$unity_5_3_6
+unity_5_3_5=/Applications/Unity5.3.5/Unity5.3.5.app/Contents/MacOS/Unity
+unity=$unity_5_3_5
 
-$unity -createProject $1 -batchmode -nographics -quit
+project_name=$1
+
+$unity -createProject ${project_name} -batchmode -nographics -quit
+
+assets_folder=${project_name}/Assets
+
+# Create default folders
+mkdir -p ${assets_folder}/Editor
+mkdir -p ${assets_folder}/Materials
+mkdir -p ${assets_folder}/Prefabs
+mkdir -p ${assets_folder}/Resources
+mkdir -p ${assets_folder}/Scenes
+mkdir -p ${assets_folder}/Scripts
+mkdir -p ${assets_folder}/Shaders
+mkdir -p ${assets_folder}/Textures
