@@ -1,8 +1,9 @@
 # Create a unity project from a project name
 
+unity_5_5=/Applications/Unity5.5/Unity5.5.app/Contents/MacOS/Unity
 unity_5_3_6=/Applications/Unity5.3.6/Unity5.3.6.app/Contents/MacOS/Unity
 unity_5_3_5=/Applications/Unity5.3.5/Unity5.3.5.app/Contents/MacOS/Unity
-unity=$unity_5_3_5
+unity=$unity_5_5
 
 project_name=$1
 

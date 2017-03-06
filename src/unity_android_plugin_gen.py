@@ -60,8 +60,10 @@ android_project_creation_cmd = 'android create project'+ \
                                ' --target ' + android_target_id + \
                                ' --name ' + android_project_name + \
                                ' --path ' + android_project_path + \
-                               ' --activity MainActiviity ' + \
-                               ' --package ' + android_package
+                               ' --activity MainActivity ' + \
+                               ' --package ' + android_package + \
+                               '-v'
+
 
 android_project_creation_output = subprocess.check_output(android_project_creation_cmd, shell=True)
 print(android_project_creation_output)
