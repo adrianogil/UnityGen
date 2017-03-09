@@ -56,17 +56,95 @@ for android_id in targets:
     if targets[android_id] >= android_min_sdk:
         android_target_id = android_id
 
-android_project_creation_cmd = 'android create project'+ \
+android_project_creation_cmd = 'android create lib-project'+ \
                                ' --target ' + android_target_id + \
                                ' --name ' + android_project_name + \
                                ' --path ' + android_project_path + \
-                               ' --activity MainActivity ' + \
                                ' --package ' + android_package + \
-                               '-v'
+                               ' --gradle --gradle-version 1.5.0'
 
 
 android_project_creation_output = subprocess.check_output(android_project_creation_cmd, shell=True)
 print(android_project_creation_output)
+
+gradle_path = android_project_path + '/build.gradle'
+
+with open(gradle_path, 'r') as f:
+    gradle_lines = f.readlines()
+
+new_gradle_lines = []
+
+already_added_gradle_lines = False
+
+for l in gradle_lines:
+    if not already_added_gradle_lines and 'android {' in l:
+        new_gradle_lines.append(l)
+        new_gradle_lines.append("\n")
+        new_gradle_lines.append("\tdef KEY_PATH = '';\n")
+        new_gradle_lines.append("\tdef AAR_PATH = '';\n")
+        new_gradle_lines.append("\n")
+        new_gradle_lines.append("\tif (System.getProperty('os.name').contains('Windows')) {\n")
+        new_gradle_lines.append("\t\tKEY_PATH = '' + rootDir + '\\\\key\\\\';\n")
+        new_gradle_lines.append("\t\tAAR_PATH = '' + rootDir + '\\\\..\\\\" + unity_project_name + "\\\\Assets\\\\Plugins\\\\Android\\\\';\n")
+        new_gradle_lines.append("\t} else {\n")
+        new_gradle_lines.append("\t\tKEY_PATH = '' + rootDir + '/key/';\n")
+        new_gradle_lines.append("\t\tAAR_PATH = '' + rootDir + '/../" + unity_project_name + "/Assets/Plugins/Android/';\n")
+        new_gradle_lines.append("\t}\n");
+        new_gradle_lines.append("\n")
+        new_gradle_lines.append("\tlintOptions {\n");
+        new_gradle_lines.append("\t\tabortOnError false\n");
+        new_gradle_lines.append("\t}\n");
+        new_gradle_lines.append("\n");
+        new_gradle_lines.append("\tassembleRelease.doLast {\n");
+        new_gradle_lines.append("\t\tcopy {\n");
+        new_gradle_lines.append("\t\t\tfrom('build/outputs/aar') {\n");
+        new_gradle_lines.append("\t\t\t\tinclude '*-release.aar'\n");
+        new_gradle_lines.append("\t\t\t}\n");
+        new_gradle_lines.append("\t\tinto AAR_PATH\n");
+        new_gradle_lines.append("\t\t}\n");
+        new_gradle_lines.append("\t}\n");
+        new_gradle_lines.append("\n");
+
+        already_added_gradle_lines = True
+    elif 'runProguard' in l:
+        new_gradle_lines.append(l.replace('runProguard', 'minifyEnabled'))
+    else:
+        new_gradle_lines.append(l)
+
+with open(gradle_path, 'w') as f:
+    for l in new_gradle_lines:
+        f.write(l)
+
+
+build_cmd = 'cd ' + android_project_path + ' && gradle wrapper && ./gradlew build --offline'
+build_output = subprocess.check_output(build_cmd, shell=True)
+print(build_output)
+
+# def KEY_PATH = '';
+# def AAR_PATH = '';
+
+# if (System.getProperty('os.name').contains('Windows')) {
+#     KEY_PATH = '' + rootDir + '\\key\\';
+#     AAR_PATH = '' + rootDir + '\\..\\PROJECT\\Assets\\Plugins\\Android\\';
+# } else {
+#     KEY_PATH = '' + rootDir + '/key/';
+#     AAR_PATH = '' + rootDir + '/../PROJECT/Assets/Plugins/Android/';
+# }
+# android {
+#     lintOptions {
+#         abortOnError false
+#     }
+# }
+
+# assembleRelease.doLast {
+#    copy {
+#       from('build/outputs/aar') {
+#         include '*-release.aar'
+#       }
+#       into AAR_PATH
+#    }
+# }
+
 # --path <path-to-workspace>/CommandLineProject \
 # --activity MainActivity \
 # --package com.reversiblean.clproject \
