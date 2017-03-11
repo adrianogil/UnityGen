@@ -98,7 +98,7 @@ for l in gradle_lines:
         new_gradle_lines.append("\tassembleRelease.doLast {\n");
         new_gradle_lines.append("\t\tcopy {\n");
         new_gradle_lines.append("\t\t\tfrom('build/outputs/aar') {\n");
-        new_gradle_lines.append("\t\t\t\tinclude '*-release.aar'\n");
+        new_gradle_lines.append("\t\t\t\tinclude '*.jar'\n");
         new_gradle_lines.append("\t\t\t}\n");
         new_gradle_lines.append("\t\tinto AAR_PATH\n");
         new_gradle_lines.append("\t\t}\n");
@@ -115,10 +115,35 @@ with open(gradle_path, 'w') as f:
     for l in new_gradle_lines:
         f.write(l)
 
+# try:
+#     build_cmd = 'cd ' + android_project_path + ' && ./gradlew tasks'
+#     build_output = subprocess.check_output(build_cmd, shell=True)
+# except:
+#     print('')
 
-build_cmd = 'cd ' + android_project_path + ' && gradle wrapper && ./gradlew build --offline'
+gradle_properties_path = android_project_path + '/gradle/wrapper/gradle-wrapper.properties'
+
+with open(gradle_properties_path, 'r') as f:
+    gradle_lines = f.readlines()
+
+new_gradle_lines = []
+
+for l in gradle_lines:
+    if 'distributionUrl' in l:
+        new_gradle_lines.append('distributionUrl=http\\://services.gradle.org/distributions/gradle-2.2-all.zip\n')
+    else:
+        new_gradle_lines.append(l)
+
+with open(gradle_properties_path, 'w') as f:
+    for l in new_gradle_lines:
+        f.write(l)
+
+
+build_cmd = 'cd ' + android_project_path + ' && ./gradlew tasks && ./gradlew build'
 build_output = subprocess.check_output(build_cmd, shell=True)
 print(build_output)
+
+
 
 # def KEY_PATH = '';
 # def AAR_PATH = '';
