@@ -6,7 +6,7 @@
 if [ -z "$2" ]
 then
     project_name=$1
-    unity_version='5_6_0_11b'
+    unity_version='5.6.0.11b'
 else
     unity_version=$1
     project_name=$2

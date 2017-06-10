@@ -7,7 +7,16 @@ current_unity_directory = sys.argv[1]
 
 def get_project_settings(setting, label_size):
     get_settings_cmd = 'cat ' + current_unity_directory + '/ProjectSettings/ProjectSettings.asset | grep ' + setting
-    settings_string = subprocess.check_output(get_settings_cmd, shell=True)
+
+    settings_string = ""
+
+    try:
+        settings_string = subprocess.check_output(get_settings_cmd, shell=True)
+    except:
+        if settings_string == "":
+            return ""
+    if settings_string == "":
+        return ""
     settings_string = settings_string[label_size:-1]
 
     return settings_string
@@ -33,8 +42,19 @@ def get_android_targets():
 
     return targets
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
 android_package = get_project_settings('bundleIdentifier', 20)
+if android_package == "":
+    android_package = get_project_settings('Android:', 12)
 android_min_sdk = get_project_settings('AndroidMinSdkVersion:', 24)
+
+android_min_sdk = int(android_min_sdk)
 
 print(android_package)
 print(android_min_sdk)
@@ -53,8 +73,9 @@ if len(targets) <= 0:
     exit()
 
 for android_id in targets:
-    if targets[android_id] >= android_min_sdk:
-        android_target_id = android_id
+    if is_number(android_id):
+        if int(targets[android_id]) >= android_min_sdk:
+            android_target_id = android_id
 
 android_project_creation_cmd = 'android create lib-project'+ \
                                ' --target ' + android_target_id + \
