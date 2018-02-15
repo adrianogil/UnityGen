@@ -1,3 +1,5 @@
+# unity_android_plugin_gen.sh
+# usage: call ./unity_android_plugin_gen.sh in a unity directory
 current_unity_directory=${PWD}
 
 python ${UNITY_GEN_PATH}/src/unity_android_plugin_gen.py ${current_unity_directory}

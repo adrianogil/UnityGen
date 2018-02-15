@@ -1,3 +1,4 @@
+# unity_android_plugin_gen
 import subprocess, sys, os
 
 if len(sys.argv) < 2:
@@ -22,7 +23,7 @@ def get_project_settings(setting, label_size):
     return settings_string
 
 def get_android_targets():
-    get_android_targets_cmd = 'android list targets | grep android-'
+    get_android_targets_cmd = 'android list target | grep android-'
     android_targets = subprocess.check_output(get_android_targets_cmd, shell=True)
     android_targets = android_targets.split('\n')
 
@@ -82,7 +83,7 @@ android_project_creation_cmd = 'android create lib-project'+ \
                                ' --name ' + android_project_name + \
                                ' --path ' + android_project_path + \
                                ' --package ' + android_package + \
-                               ' --gradle --gradle-version 1.5.0'
+                               ' --gradle --gradle-version 3.3'
 
 
 android_project_creation_output = subprocess.check_output(android_project_creation_cmd, shell=True)
@@ -159,8 +160,8 @@ with open(gradle_properties_path, 'w') as f:
     for l in new_gradle_lines:
         f.write(l)
 
+build_cmd = 'cd ' + android_project_path + ' && gradle wrapper && ./gradlew build'
 
-build_cmd = 'cd ' + android_project_path + ' && ./gradlew tasks && ./gradlew build'
 build_output = subprocess.check_output(build_cmd, shell=True)
 print(build_output)
 
