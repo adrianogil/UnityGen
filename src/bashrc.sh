@@ -1,5 +1,5 @@
-alias gen-unity-project=${UNITY_GEN_PATH}'/src/unity_project_gen.sh'
-alias gen-android-unity-plugin=${UNITY_GEN_PATH}'/src/unity_android_plugin_gen.sh'
+alias gen-unity-project=${UNITY_GEN_PATH}'/unity_project_gen.sh'
+alias gen-android-unity-plugin=${UNITY_GEN_PATH}'/unity_android_plugin_gen.sh'
 
 _gen-unity-project()
 {
@@ -8,7 +8,7 @@ _gen-unity-project()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts=$(python2 ${UNITY_GEN_PATH}/src/get_all_unity_versions.py)
+    opts=$(python2 ${UNITY_GEN_PATH}/get_all_unity_versions.py)
     _script_folders=$opts
 
     if [[ ${cur} == * ]] ; then

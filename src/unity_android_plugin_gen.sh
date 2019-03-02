@@ -2,7 +2,7 @@
 # usage: call ./unity_android_plugin_gen.sh in a unity directory
 current_unity_directory=${PWD}
 
-python ${UNITY_GEN_PATH}/src/unity_android_plugin_gen.py ${current_unity_directory}
+python ${UNITY_GEN_PATH}/unity_android_plugin_gen.py ${current_unity_directory}
 
 # android_plugin_project=CommandLineProject
 
