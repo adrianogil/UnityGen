@@ -12,13 +12,21 @@ else
     project_name=$2
 fi
 
-unity="/Applications/Unity"${unity_version}"/Unity"${unity_version}".app/Contents/MacOS/Unity"
+if [ -z "$UNITY_APPS_FOLDER" ]
+then
+    unity_main_path=/Applications/
+else
+    unity_main_path=${UNITY_APPS_FOLDER}
+fi
+
+unity="${unity_main_path}/Unity"${unity_version}"/Unity"${unity_version}".app/Contents/MacOS/Unity"
 
 $unity -createProject ${project_name} -batchmode -nographics -quit
 
 assets_folder=${project_name}/Assets
 
 # Create default folders
+echo "Generating default folder structure at Assets folder"
 mkdir -p ${assets_folder}/Editor
 mkdir -p ${assets_folder}/Materials
 mkdir -p ${assets_folder}/Prefabs
@@ -27,3 +35,4 @@ mkdir -p ${assets_folder}/Scenes
 mkdir -p ${assets_folder}/Scripts
 mkdir -p ${assets_folder}/Shaders
 mkdir -p ${assets_folder}/Textures
+
